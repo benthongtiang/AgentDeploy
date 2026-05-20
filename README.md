@@ -1,21 +1,21 @@
 # Antigravity ADLC Deploy Pipeline
 
-ชุดเครื่องมือ **DevOps & Auto-Deployment Pipeline** ที่ถูกดึงออกมาเฉพาะส่วน deploy จาก Antigravity ADLC Toolkit เพื่อใช้วิเคราะห์ ติดตั้ง และดูแลรักษาระบบ (Self-healing) บน Cloud provider หรือ VPS แบบอัตโนมัติ
+A **DevOps & Auto-Deployment Pipeline** toolset extracted specifically from the Antigravity ADLC Toolkit for automated codebase analysis, provisioning, deployment, and self-healing system recovery on cloud providers or VPS environments.
 
 ---
 
-## สารบัญ (Table of Contents)
-1. [ภาพรวมของกระบวนการ (Pipeline Overview)](#ภาพรวมของกระบวนการ-pipeline-overview)
-2. [โครงสร้างโฟลเดอร์ (Directory Structure)](#โครงสร้างโฟลเดอร์-directory-structure)
-3. [การตั้งค่าปุ่มลัด Global (Global Setup & Short Commands)](#การตั้งค่าปุ่มลัด-global-global-setup--short-commands)
-4. [รายละเอียดการทำงานแต่ละเฟส (Phase Details)](#รายละเอียดการทำงานแต่ละเฟส-phase-details)
-5. [หลักการทำงานร่วมกัน (Core Ethos)](#หลักการทำงานร่วมกัน-core-ethos)
+## Table of Contents
+1. [Pipeline Overview](#pipeline-overview)
+2. [Directory Structure](#directory-structure)
+3. [Global Setup & Short Commands](#global-setup--short-commands)
+4. [Phase Details](#phase-details)
+5. [Core Ethos](#core-ethos)
 
 ---
 
-## ภาพรวมของกระบวนการ (Pipeline Overview)
+## Pipeline Overview
 
-เมื่อเรียกใช้งานคำสั่ง `/deploy` ระบบจะเรียกใช้งาน Sub-skills ต่าง ๆ ตามลำดับดังนี้:
+When executing the `/deploy` command, the system triggers sub-skills sequentially as follows:
 
 ```mermaid
 graph TD
@@ -32,37 +32,37 @@ graph TD
 
 ---
 
-## โครงสร้างโฟลเดอร์ (Directory Structure)
+## Directory Structure
 
 ```text
 AgentDeploy/
-├── README.md               # เอกสารคู่มือชุดเครื่องมือชุดนี้
-├── ETHOS.md                # กฎเหล็กและหลักการของ Agent
-├── deploy/                 # คำสั่งหลัก /deploy (Orchestrator)
+├── README.md               # Toolset documentation
+├── ETHOS.md                # Agent rules and core principles
+├── deploy/                 # Main orchestrator /deploy
 │   └── SKILL.md
-├── deploy-analyze/         # คำสั่งวิเคราะห์ Codebase และสร้าง Config
+├── deploy-analyze/         # Codebase analysis & config generator
 │   └── SKILL.md
-├── deploy-env/             # คำสั่งช่วยตรวจจับและตั้งค่า Environment Variables
+├── deploy-env/             # Environment variable detection & setup helper
 │   └── SKILL.md
-├── deploy-provision/       # คำสั่งสร้าง Service และฐานข้อมูลบน Cloud/VPS
+├── deploy-provision/       # Service & database provisioning on Cloud/VPS
 │   └── SKILL.md
-├── deploy-trigger/         # คำสั่งสั่ง Deploy และดึง Log มาวิเคราะห์
+├── deploy-trigger/         # Build execution & log analyzer
 │   └── SKILL.md
-├── deploy-heal/            # คำสั่งวิเคราะห์ Log ที่พังและเขียนโค้ดแก้ตัวเอง (Self-healing)
+├── deploy-heal/            # Failure analysis & self-healing patcher
 │   └── SKILL.md
-└── partials/               # สคริปต์แชร์ใช้งานระหว่างสเต็ป
+└── partials/               # Shared scripts across phases
     └── ethos-include.sh
 ```
 
 ---
 
-## การตั้งค่าปุ่มลัด Global (Global Setup & Short Commands)
+## Global Setup & Short Commands
 
-เพื่อให้สามารถพิมพ์คำสั่งลัดเช่น `/deploy` หรือ `/deploy-heal` ใน IDE/AI Agent ของคุณ แล้วเครื่องมือพัฒนาเรียกใช้งานคำสั่งตามขั้นตอนของชุดเครื่องมือนี้โดยอัตโนมัติ ให้ทำการตั้งค่าตามคำแนะนำของเครื่องมือแต่ละค่ายดังนี้:
+To execute short commands such as `/deploy` or `/deploy-heal` in your IDE/AI Agent and have the development tools automatically load this toolset's sequence, follow the configuration instructions for your preferred AI tool below:
 
 ### 🌌 1. Antigravity (Google Gemini Agent)
-* **ตำแหน่งไฟล์**: `~/.gemini/GEMINI.md` หรือระบุในโฟลเดอร์โปรเจกต์ที่ `.agent/rules/`
-* **ตั้งค่าดังนี้** (เส้นทางระบุไปยังไดเรกทอรีนี้ `/Users/ben/Desktop/Work/AgentDeploy`):
+* **File Location**: `~/.gemini/GEMINI.md` or locally in `.agent/rules/` within your project folder.
+* **Configuration** (Paths mapped to this directory `/Users/ben/Desktop/Work/AgentDeploy`):
 ```markdown
 When the user inputs a short command, always execute the `view_file` tool in the background with `IsSkillFile: true` pointing to the corresponding Skill file before starting work:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -74,8 +74,8 @@ When the user inputs a short command, always execute the `view_file` tool in the
 ```
 
 ### 🚀 2. Cursor
-* **ตำแหน่งไฟล์**: สร้างไฟล์ `.cursorrules` ไว้ที่ Root ของโปรเจกต์
-* **ตั้งค่าดังนี้**:
+* **File Location**: Create a `.cursorrules` file at the root of your project.
+* **Configuration**:
 ```markdown
 When the user inputs a short command, always read the corresponding Skill file immediately before taking action or responding:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -87,8 +87,8 @@ When the user inputs a short command, always read the corresponding Skill file i
 ```
 
 ### 🏄 3. Windsurf
-* **ตำแหน่งไฟล์**: สร้างไฟล์ `.windsurfrules` ไว้ที่ Root ของโปรเจกต์
-* **ตั้งค่าดังนี้**:
+* **File Location**: Create a `.windsurfrules` file at the root of your project.
+* **Configuration**:
 ```markdown
 When the user inputs a short command or references these deployment processes, read the corresponding Skill file immediately before proceeding:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -100,8 +100,8 @@ When the user inputs a short command or references these deployment processes, r
 ```
 
 ### 🛠️ 4. Roo Code / Cline (VS Code Extension)
-* **ตำแหน่งไฟล์**: สร้างไฟล์ `.clinerules` ไว้ที่ Root ของโปรเจกต์
-* **ตั้งค่าดังนี้**:
+* **File Location**: Create a `.clinerules` file at the root of your project.
+* **Configuration**:
 ```markdown
 When the user inputs a short command, read the corresponding Skill file before starting work:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -113,8 +113,8 @@ When the user inputs a short command, read the corresponding Skill file before s
 ```
 
 ### 🐙 5. GitHub Copilot
-* **ตำแหน่งไฟล์**: สร้างไฟล์ `.github/copilot-instructions.md` ไว้ที่ Root ของโปรเจกต์
-* **ตั้งค่าดังนี้**:
+* **File Location**: Create a `.github/copilot-instructions.md` file at the root of your project.
+* **Configuration**:
 ```markdown
 When the user references these custom slash commands, read the content of the referenced file to understand the skill context:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -126,8 +126,8 @@ When the user references these custom slash commands, read the content of the re
 ```
 
 ### 💎 6. JetBrains AI Assistant (IntelliJ, WebStorm, PyCharm, etc.)
-* **ตำแหน่งไฟล์**: ระบุคู่มือใน **System Prompt** / **Prompt Library** หรือสร้างไฟล์ `.github/copilot-instructions.md` ที่ Root ของโปรเจกต์
-* **ตั้งค่าดังนี้**:
+* **File Location**: Add the rules to your custom **System Prompt** / **Prompt Library**, or create a `.github/copilot-instructions.md` file at the root of your project.
+* **Configuration**:
 ```markdown
 When the user inputs a short command, refer to the corresponding Skill file:
 - `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
@@ -140,37 +140,37 @@ When the user inputs a short command, refer to the corresponding Skill file:
 
 ---
 
-## รายละเอียดการทำงานแต่ละเฟส (Phase Details)
+## Phase Details
 
 ### 🚀 `/deploy` (Orchestrator)
-ทำหน้าที่ประสานงานระหว่าง sub-skills ทั้งหมดตั้งแต่ตรวจเช็ค credential ไปจนถึง verify เว็บไซต์หลังปล่อยขึ้นเซิร์ฟเวอร์สำเร็จ
+Coordinates the execution of all sub-skills, starting from credential checks to final deployment verification.
 
 ### 🔍 `/deploy-analyze`
-* วิเคราะห์เทคโนโลยีที่ใช้ (Node.js, Python, Go, Rust, Ruby)
-* ตรวจหา Port ที่ระบบใช้งาน และฐานข้อมูลที่ต้องใช้
-* ทำการสร้างไฟล์ `Dockerfile`, `docker-compose.yml` หรือ `nixpacks.toml` ให้โดยอัตโนมัติหากยังไม่มี
+* Analyzes the active tech stack (Node.js, Python, Go, Rust, Ruby, etc.).
+* Detects network ports used by the application and required databases.
+* Automatically generates a `Dockerfile`, `docker-compose.yml`, or `nixpacks.toml` if they do not already exist.
 
 ### 🔑 `/deploy-env`
-* ค้นหาไฟล์ `.env.example` หรือสแกนโค้ดหาตัวแปรแวดล้อม
-* สรุปรายการ และขอให้ผู้ใช้งานกรอกค่าความลับ (Secrets) หรือค่าตั้งต้นอย่างปลอดภัย
+* Locates `.env.example` files or scans source code for environment variables.
+* Summarizes the required environment variables and prompts the user to enter secrets/default configurations securely.
 
 ### 🛠️ `/deploy-provision`
-* เชื่อมต่อไปยัง Coolify API, Railway CLI หรือ VPS (ผ่าน SSH)
-* สร้างฐานข้อมูล (PostgreSQL, Redis, MySQL ฯลฯ)
-* ผูกโดเมน ตั้งค่า Port forwarding และแนบ Environment variables ทั้งหมดเข้ากับแอปพลิเคชัน
+* Connects to deployment engines (Coolify API, Railway CLI) or VPS (via SSH).
+* Provisions databases (PostgreSQL, Redis, MySQL, etc.) as identified in the analysis phase.
+* Binds domains, configures port forwarding, and attaches environment variables to the app service.
 
 ### 🎬 `/deploy-trigger`
-* สั่งเริ่มทำการ Build และ Deploy บน Cloud/VPS
-* แสดงผล Log การสร้างและรันเซิร์ฟเวอร์แบบ Real-time
-* ยิง HTTP GET ไปทดสอบ URL เพื่อเช็คผลลัพธ์ (Health check)
+* Triggers the build and deployment process on Cloud/VPS.
+* Streams build logs and server outputs in real-time.
+* Performs a health check by sending HTTP GET requests to the deployment URL.
 
 ### 🏥 `/deploy-heal` (Self-Healing)
-* หากการ Deploy ล้มเหลว ระบบจะดึง Log ความพิดพลาดมาวิเคราะห์หาสาเหตุ
-* ทำการแก้ไขโค้ดหรือไฟล์ Config ที่เกี่ยวข้องในระบบทันที
-* สั่ง Git Commit & Push เพื่อยิงขึ้นไปรันใหม่อัตโนมัติ (รองรับสูงสุด 3 รอบป้องกัน Loop)
+* If the deployment fails, the agent fetches and analyzes the error logs.
+* Instantly fixes root causes in source code or configuration files.
+* Commits, pushes changes, and triggers a redeployment automatically (limits to 3 attempts to prevent infinite loops).
 
 ---
 
-## หลักการทำงานร่วมกัน (Core Ethos)
+## Core Ethos
 
-ดูรายละเอียดหลักการปฏิบัติงานได้ที่ [ETHOS.md](file:///Users/ben/Desktop/Work/AgentDeploy/ETHOS.md)
+For developer guidelines and standard operating procedures, please refer to [ETHOS.md](file:///Users/ben/Desktop/Work/AgentDeploy/ETHOS.md).
