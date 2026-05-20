@@ -138,6 +138,19 @@ When the user inputs a short command, refer to the corresponding Skill file:
 - `/deploy-heal` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-heal/SKILL.md`
 ```
 
+### 🤖 7. Claude Code
+* **File Location**: Create a `.clauderules` file at the root of your project.
+* **Configuration**:
+```markdown
+When the user inputs a short command, always read the corresponding Skill file immediately before taking action or responding:
+- `/deploy` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy/SKILL.md`
+- `/deploy-analyze` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-analyze/SKILL.md`
+- `/deploy-env` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-env/SKILL.md`
+- `/deploy-provision` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-provision/SKILL.md`
+- `/deploy-trigger` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-trigger/SKILL.md`
+- `/deploy-heal` -> Read the file `/Users/ben/Desktop/Work/AgentDeploy/deploy-heal/SKILL.md`
+```
+
 ---
 
 ## Phase Details
