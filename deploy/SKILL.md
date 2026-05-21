@@ -16,6 +16,7 @@ You are the autonomous DevOps orchestrator. Your task is to guide the applicatio
 
 - Deployment config: !`cat .adlc/config.yml 2>/dev/null || echo "No deployment config found"`
 - Active spec: !`grep -rl 'status: in-progress' .adlc/specs/*/requirement.md 2>/dev/null | head -1 || echo "No active spec"`
+- Deployment context: !`cat .adlc/context/deployment.md 2>/dev/null || echo "No active deployment context found"`
 
 ## Input
 
@@ -100,8 +101,12 @@ All deployment execution files (implementation plan, task tracker, state status,
    - **Exposed Port:** e.g., 3000
    - **Database Services:** Connected
    - **Auto-healed Issues:** Details of any fixes applied in Phase 5.
-3. Log status: "Deployment successful. Handover complete."
-4. Update `.adlc/deployment/<run-id>/deploy-status.json` with Phase 6 status: `success`, and set the overall status to `success`.
+3. Generate or update `.adlc/context/deployment.md` with:
+   - **Active Rollout**: Status (`success`), Last Deployed timestamp, Last Successful Run ID (`<run-id>`) with a markdown link to `.adlc/deployment/<run-id>/`.
+   - **Infrastructure & Routing**: Target Provider, Public Domain, Container Port, Database type.
+   - **External Integrations**: SMTP configuration status, other APIs.
+4. Log status: "Deployment successful. Handover complete."
+5. Update `.adlc/deployment/<run-id>/deploy-status.json` with Phase 6 status: `success`, and set the overall status to `success`.
 
 ## Error Handling
 
