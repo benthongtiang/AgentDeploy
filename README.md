@@ -1,6 +1,6 @@
-# AgentDeploy
+# AgentDeploy (ADLC Auto-Deploy Pipeline)
 
-A **DevOps & Auto-Deployment Pipeline** toolset for automated codebase analysis, provisioning, deployment, and self-healing system recovery on cloud providers or VPS environments.
+An agentic **DevOps & Auto-Deployment Pipeline** toolset (operating via the `.adlc/` directory inside consumer projects) for automated codebase analysis, environment provisioning, deployment execution, and self-healing system recovery on cloud providers or VPS environments.
 
 ---
 
